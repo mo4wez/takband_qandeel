@@ -5,6 +5,13 @@ class Century(models.Model):
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name_plural = 'Centuries'
+
+    
+    def __str__(self):
+        return self.name
+
 
 class Poet(models.Model):
     name = models.CharField(max_length=255)
@@ -13,6 +20,10 @@ class Poet(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return self.name
 
 
 class Book(models.Model):
@@ -24,11 +35,19 @@ class Book(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
 
+    def __str__(self):
+        return self.name
+
+
 class Poem(models.Model):
     name = models.CharField(max_length=255)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return self.name
 
 
 class Section(models.Model):
@@ -39,3 +58,7 @@ class Section(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return self.title

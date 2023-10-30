@@ -5,6 +5,7 @@ from .models import Century, Poet, Book, Poem, Section
 @admin.register(Century)
 class CenturyAdmin(admin.ModelAdmin):
     list_display = ['name', 'created_at']
+    
 
 @admin.register(Poet)
 class PoetAdmin(admin.ModelAdmin):
