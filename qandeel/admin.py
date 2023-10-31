@@ -1,4 +1,8 @@
+from typing import Any
 from django.contrib import admin
+from django.db.models.query import QuerySet
+from django.http.request import HttpRequest
+from django.db.models import Count
 
 from .models import Century, Poet, Book, PoeticFormat, Section, Comment
 
@@ -10,10 +14,12 @@ class CenturyAdmin(admin.ModelAdmin):
 @admin.register(Poet)
 class PoetAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'century', 'created_at',]
+    list_per_page = 10
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'poet', 'created_at',]
+    list_per_page = 10
 
 @admin.register(PoeticFormat)
 class PoeticFormatAdmin(admin.ModelAdmin):
@@ -21,8 +27,20 @@ class PoeticFormatAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'book', 'poetic_format', 'created_at', 'modified_at',]
+    list_display = ['id', 'title', 'book', 'poetic_format', 'num_of_comments', 'modified_at',]
+    list_per_page = 20
+
+    def get_queryset(self, request: HttpRequest):
+        return super().get_queryset(request) \
+            .prefetch_related('comments') \
+            .annotate(comments_count=Count('comments'))
+
+    @admin.display(ordering='comments_count', description='# comments')
+    def num_of_comments(self, section: Section):
+        return section.comments_count
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'section', 'status', 'active',]
+    list_editable = ['status', 'active',]
+    list_per_page = 20
