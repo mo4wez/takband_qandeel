@@ -19,7 +19,7 @@ class PoetAdmin(admin.ModelAdmin):
 class BookAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'poet', 'created_at',]
     list_per_page = 10
-    search_fields = ['name', 'book',]
+    search_fields = ['name', 'poet',]
 
 @admin.register(PoeticFormat)
 class PoeticFormatAdmin(admin.ModelAdmin):
