@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Century, Poet, Book, Poem, Section
+from .models import Century, Poet, Book, PoeticFormat, Section
 
 @admin.register(Century)
 class CenturyAdmin(admin.ModelAdmin):
@@ -15,10 +15,10 @@ class PoetAdmin(admin.ModelAdmin):
 class BookAdmin(admin.ModelAdmin):
     list_display = ['name', 'poet', 'created_at']
 
-@admin.register(Poem)
-class PoemAdmin(admin.ModelAdmin):
+@admin.register(PoeticFormat)
+class PoeticFormatAdmin(admin.ModelAdmin):
     list_display = ['name', 'created_at']
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ['title', 'book', 'poem', 'created_at', 'modified_at']
+    list_display = ['title', 'book', 'poetic_format', 'created_at', 'modified_at']
