@@ -1,6 +1,4 @@
-from typing import Any
 from django.contrib import admin
-from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
 from django.db.models import Count
 
@@ -15,6 +13,7 @@ class CenturyAdmin(admin.ModelAdmin):
 class PoetAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'century', 'created_at',]
     list_per_page = 10
+    search_fields = ['name',]
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
