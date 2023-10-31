@@ -29,6 +29,7 @@ class PoeticFormatAdmin(admin.ModelAdmin):
 class SectionAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'book', 'poetic_format', 'num_of_comments', 'modified_at',]
     list_per_page = 20
+    search_fields = ['title', 'book', 'poetic_format',]
 
     def get_queryset(self, request: HttpRequest):
         return super().get_queryset(request) \
