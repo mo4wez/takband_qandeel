@@ -7,23 +7,28 @@ from .models import Century, Poet, Book, PoeticFormat, Section, Comment
 
 @admin.register(Century)
 class CenturyAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'created_at',] 
+    list_display = ['id', 'name', 'created_at',]
+    list_per_page = 10
+    ordering = ['name',]
 
 @admin.register(Poet)
 class PoetAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'century', 'created_at',]
     list_per_page = 10
+    ordering = ['name',]
     search_fields = ['name',]
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'poet', 'created_at',]
     list_per_page = 10
+    ordering = ['name',]
     search_fields = ['name', 'poet',]
 
 @admin.register(PoeticFormat)
 class PoeticFormatAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'created_at',]
+    ordering = ['name',]
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
@@ -45,4 +50,5 @@ class SectionAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'section', 'status', 'active',]
     list_editable = ['status', 'active',]
+    ordering = ['active',]
     list_per_page = 20
