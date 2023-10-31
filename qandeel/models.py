@@ -51,7 +51,7 @@ class Section(models.Model):
     title = models.CharField(max_length=255)
     body = models.TextField()
     book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
-    poetic_format = models.OneToOneField(to=PoeticFormat, on_delete=models.CASCADE)
+    poetic_format = models.ForeignKey(to=PoeticFormat, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
