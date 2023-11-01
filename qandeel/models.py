@@ -15,6 +15,7 @@ class Century(models.Model):
 
 class Poet(models.Model):
     name = models.CharField(max_length=255)
+    slug = models.SlugField(blank=True)
     description = models.TextField()
     century = models.ForeignKey(to=Century, on_delete=models.PROTECT)
 
@@ -27,6 +28,7 @@ class Poet(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=255)
+    slug = models.SlugField(blank=True)
     description = models.TextField()
     poet = models.ForeignKey(to=Poet, on_delete=models.CASCADE)
     
@@ -49,6 +51,7 @@ class PoeticFormat(models.Model):
 
 class Section(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField(blank=True)
     body = models.TextField()
     book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
     poetic_format = models.ForeignKey(to=PoeticFormat, on_delete=models.CASCADE)
