@@ -10,6 +10,8 @@ django-allauth = "*"
 django-debug-toolbar = "*"
 unidecode = "*"
 transliterate = "*"
+python-slugify = "*"
+django-extensions = "*"
 
 [dev-packages]
 
