@@ -11,11 +11,13 @@ class CommentsInline(admin.StackedInline):
     fields = ['user', 'text', 'status', 'active',]
     extra = 1
 
+
 @admin.register(Century)
 class CenturyAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'created_at',]
     list_per_page = 10
     ordering = ['name',]
+
 
 @admin.register(Poet)
 class PoetAdmin(admin.ModelAdmin):
@@ -34,14 +36,18 @@ class BookAdmin(admin.ModelAdmin):
     list_per_page = 10
     ordering = ['name',]
     search_fields = ['name', 'poet',]
+    autocomplete_fields = ['poet',]
     prepopulated_fields = {
         'slug': ('name',),
     }
 
+
 @admin.register(PoeticFormat)
 class PoeticFormatAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'created_at',]
-    ordering = ['name',]
+    search_fields = ['name',]
+    ordering = ['created_at',]
+
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
@@ -49,10 +55,11 @@ class SectionAdmin(admin.ModelAdmin):
     list_per_page = 20
     ordering = ['title', 'book', 'poetic_format',]
     search_fields = ['title__istartswith', 'book', 'poetic_format',]
+    autocomplete_fields = ['poetic_format', 'book',]
+    inlines = [CommentsInline,]
     prepopulated_fields = {
         'slug': ('title',),
     }
-    inlines = [CommentsInline,]
 
     def get_queryset(self, request: HttpRequest):
         return super().get_queryset(request) \
@@ -63,9 +70,11 @@ class SectionAdmin(admin.ModelAdmin):
     def num_of_comments(self, section: Section):
         return section.comments_count
 
+
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'section', 'status', 'active',]
-    list_editable = ['status', 'active',]
-    ordering = ['active',]
     list_per_page = 20
+    list_editable = ['status', 'active',]
+    ordering = ['-active',]
+    autocomplete_fields = ['section',]

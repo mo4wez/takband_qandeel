@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils.text import slugify
+
 
 class Century(models.Model):
     name = models.CharField(max_length=255)
@@ -13,9 +13,6 @@ class Century(models.Model):
     def __str__(self):
         return self.name
 
-def my_slugify_function(content):
-    return slugify(content, allow_unicode=True)
-
 
 class Poet(models.Model):
     name = models.CharField(max_length=255)
@@ -25,11 +22,6 @@ class Poet(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name, allow_unicode=True)
-        return super(Poet, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
