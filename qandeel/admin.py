@@ -5,6 +5,12 @@ from django.http.request import HttpRequest
 from .models import Century, Poet, Book, PoeticFormat, Section, Comment
 
 
+
+class CommentsInline(admin.StackedInline):
+    model = Comment
+    fields = ['user', 'text', 'status', 'active',]
+    extra = 1
+
 @admin.register(Century)
 class CenturyAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'created_at',]
@@ -46,6 +52,7 @@ class SectionAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
+    inlines = [CommentsInline,]
 
     def get_queryset(self, request: HttpRequest):
         return super().get_queryset(request) \

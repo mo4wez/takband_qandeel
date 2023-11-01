@@ -90,3 +90,6 @@ class Comment(models.Model):
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=COMMENT_WAITING)
     active = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f'comment {self.id}'
+
