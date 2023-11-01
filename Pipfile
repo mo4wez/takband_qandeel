@@ -8,6 +8,8 @@ django = "*"
 environs = "*"
 django-allauth = "*"
 django-debug-toolbar = "*"
+unidecode = "*"
+transliterate = "*"
 
 [dev-packages]
 

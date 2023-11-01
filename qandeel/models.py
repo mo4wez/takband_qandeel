@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
+from transliterate import translit
 
 class Century(models.Model):
     name = models.CharField(max_length=255)
@@ -15,12 +17,17 @@ class Century(models.Model):
 
 class Poet(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(blank=True)
+    slug = models.SlugField(unique=True, blank=True)
     description = models.TextField()
     century = models.ForeignKey(to=Century, on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(translit(self.name, 'fa', reversed=True))
+        return super(Poet, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -28,7 +35,7 @@ class Poet(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(blank=True)
+    slug = models.SlugField(unique=True ,blank=True)
     description = models.TextField()
     poet = models.ForeignKey(to=Poet, on_delete=models.CASCADE)
     
@@ -51,7 +58,7 @@ class PoeticFormat(models.Model):
 
 class Section(models.Model):
     title = models.CharField(max_length=255)
-    slug = models.SlugField(blank=True)
+    slug = models.SlugField(unique=True ,blank=True)
     body = models.TextField()
     book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
     poetic_format = models.ForeignKey(to=PoeticFormat, on_delete=models.CASCADE)

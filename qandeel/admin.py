@@ -1,6 +1,6 @@
 from django.contrib import admin
-from django.http.request import HttpRequest
 from django.db.models import Count
+from django.http.request import HttpRequest
 
 from .models import Century, Poet, Book, PoeticFormat, Section, Comment
 
@@ -17,6 +17,10 @@ class PoetAdmin(admin.ModelAdmin):
     list_per_page = 10
     ordering = ['name',]
     search_fields = ['name',]
+    prepopulated_fields = {
+        'slug': ('name',),
+    }
+
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
@@ -24,6 +28,9 @@ class BookAdmin(admin.ModelAdmin):
     list_per_page = 10
     ordering = ['name',]
     search_fields = ['name', 'poet',]
+    prepopulated_fields = {
+        'slug': ('name',),
+    }
 
 @admin.register(PoeticFormat)
 class PoeticFormatAdmin(admin.ModelAdmin):
@@ -36,6 +43,9 @@ class SectionAdmin(admin.ModelAdmin):
     list_per_page = 20
     ordering = ['title', 'book', 'poetic_format',]
     search_fields = ['title__istartswith', 'book', 'poetic_format',]
+    prepopulated_fields = {
+        'slug': ('title',),
+    }
 
     def get_queryset(self, request: HttpRequest):
         return super().get_queryset(request) \
