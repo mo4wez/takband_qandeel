@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 
@@ -9,32 +10,37 @@ class Century(models.Model):
     class Meta:
         verbose_name_plural = 'Centuries'
 
-
     def __str__(self):
         return self.name
 
 
 class Poet(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, blank=True)
     description = models.TextField()
     century = models.ForeignKey(to=Century, on_delete=models.PROTECT)
+    slug = models.SlugField(unique=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def get_absolute_url(self):
+        return reverse("model_detail", kwargs={"pk": self.pk})
+    
     def __str__(self):
         return self.name
 
 
 class Book(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True ,blank=True)
     description = models.TextField()
     poet = models.ForeignKey(to=Poet, on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse("model_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.name
@@ -52,14 +58,17 @@ class PoeticFormat(models.Model):
 
 class Section(models.Model):
     title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True ,blank=True)
     body = models.TextField()
     book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
     poetic_format = models.ForeignKey(to=PoeticFormat, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse("model_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.title
