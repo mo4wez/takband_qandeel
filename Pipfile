@@ -12,6 +12,8 @@ unidecode = "*"
 transliterate = "*"
 python-slugify = "*"
 django-extensions = "*"
+psycopg2-binary = "==2.9.7"
+pillow = "*"
 
 [dev-packages]
 
