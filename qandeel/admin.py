@@ -1,8 +1,9 @@
+from typing import Any
 from django.contrib import admin
 from django.db.models import Count
 from django.http.request import HttpRequest
 
-from .models import Century, Poet, Book, PoeticFormat, Section, Comment
+from .models import Century, Poet, Book, PoeticFormat, Section, Comment, Favorite
 
 
 
@@ -16,7 +17,8 @@ class CommentsInline(admin.StackedInline):
 class CenturyAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'created_at',]
     list_per_page = 10
-    ordering = ['name',]
+    ordering = ['created_at',]
+    search_fields = ['name',]
 
 
 @admin.register(Poet)
@@ -25,6 +27,7 @@ class PoetAdmin(admin.ModelAdmin):
     list_per_page = 10
     ordering = ['name',]
     search_fields = ['name',]
+    autocomplete_fields = ['century',]
     prepopulated_fields = {
         'slug': ('name',),
     }
@@ -78,3 +81,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_editable = ['status', 'active',]
     ordering = ['-active',]
     autocomplete_fields = ['section',]
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'content_type', 'object_id',]

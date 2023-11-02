@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class Century(models.Model):
@@ -16,9 +18,9 @@ class Century(models.Model):
 
 class Poet(models.Model):
     name = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, blank=True)
     description = models.TextField()
     century = models.ForeignKey(to=Century, on_delete=models.PROTECT)
-    slug = models.SlugField(unique=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -32,9 +34,9 @@ class Poet(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, blank=True)
     description = models.TextField()
     poet = models.ForeignKey(to=Poet, on_delete=models.CASCADE)
-    slug = models.SlugField(unique=True, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -58,11 +60,11 @@ class PoeticFormat(models.Model):
 
 class Section(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, blank=True)
     body = models.TextField()
     book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
     poetic_format = models.ForeignKey(to=PoeticFormat, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
-    slug = models.SlugField(unique=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -93,4 +95,14 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'comment {self.id}'
+    
+
+class Favorite(models.Model):
+    user = models.ForeignKey(to=get_user_model(), related_name='favorites', on_delete=models.CASCADE)
+    content_type = models.ForeignKey(to=ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return f'Favorite {self.id}'
 
