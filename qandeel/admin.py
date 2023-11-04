@@ -61,9 +61,9 @@ class TopicAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'book', 'poetic_format', 'topic', 'num_of_comments', 'modified_at',]
+    list_display = ['id', 'title', 'book', 'get_poet', 'poetic_format', 'topic', 'num_of_comments', 'modified_at',]
     list_per_page = 20
-    ordering = ['title', 'book', 'poetic_format',]
+    ordering = ['title',]
     search_fields = ['title__istartswith', 'book', 'poetic_format', 'topic',]
     autocomplete_fields = ['poetic_format', 'book', 'topic',]
     inlines = [CommentsInline,]
@@ -80,6 +80,9 @@ class SectionAdmin(admin.ModelAdmin):
     def num_of_comments(self, section: Section):
         return section.comments_count
 
+    @admin.display(description='Poet')
+    def get_poet(self, section: Section):
+        return section.book.poet.name if section.book and section.book.poet else ''
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
