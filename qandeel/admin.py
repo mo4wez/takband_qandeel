@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.db.models import Count
 from django.http.request import HttpRequest
 
-from .models import Century, Poet, Book, PoeticFormat, Section, Comment, Favorite
+from .models import Century, Poet, Book, PoeticFormat, Topic, Section, Comment
 
 
 
@@ -52,13 +52,20 @@ class PoeticFormatAdmin(admin.ModelAdmin):
     ordering = ['created_at',]
 
 
+@admin.register(Topic)
+class TopicAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'created_at',]
+    search_fields = ['name',]
+    ordering = ['created_at',]
+
+
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'book', 'poetic_format', 'num_of_comments', 'modified_at',]
+    list_display = ['id', 'title', 'book', 'poetic_format', 'topic', 'num_of_comments', 'modified_at',]
     list_per_page = 20
     ordering = ['title', 'book', 'poetic_format',]
-    search_fields = ['title__istartswith', 'book', 'poetic_format',]
-    autocomplete_fields = ['poetic_format', 'book',]
+    search_fields = ['title__istartswith', 'book', 'poetic_format', 'topic',]
+    autocomplete_fields = ['poetic_format', 'book', 'topic',]
     inlines = [CommentsInline,]
     prepopulated_fields = {
         'slug': ('title',),
@@ -82,6 +89,3 @@ class CommentAdmin(admin.ModelAdmin):
     ordering = ['-active',]
     autocomplete_fields = ['section',]
 
-@admin.register(Favorite)
-class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'content_type', 'object_id',]

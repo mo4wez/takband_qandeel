@@ -58,12 +58,23 @@ class PoeticFormat(models.Model):
         return self.name
 
 
+class Topic(models.Model):
+    name = models.CharField(max_length=255)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Section(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
     body = models.TextField()
     book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
-    poetic_format = models.ForeignKey(to=PoeticFormat, on_delete=models.CASCADE)
+    poetic_format = models.ForeignKey(to=PoeticFormat, related_name='sections', on_delete=models.CASCADE)
+    topic = models.ForeignKey(to=Topic, related_name='sections', null=True, blank=True, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -95,14 +106,5 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'comment {self.id}'
-    
 
-class Favorite(models.Model):
-    user = models.ForeignKey(to=get_user_model(), related_name='favorites', on_delete=models.CASCADE)
-    content_type = models.ForeignKey(to=ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-
-    def __str__(self):
-        return f'Favorite {self.id}'
 
