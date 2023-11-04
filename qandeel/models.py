@@ -42,7 +42,7 @@ class Book(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
-        return reverse("model_detail", kwargs={"pk": self.pk})
+        return reverse("qandeel:book_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.name
@@ -81,7 +81,7 @@ class Section(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
-        return reverse("model_detail", kwargs={"pk": self.pk})
+        return reverse("qandeel:section_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.title
