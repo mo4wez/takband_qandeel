@@ -8,3 +8,11 @@ class HomePageView(TemplateView):
 
 class AboutUsPageView(TemplateView):
     template_name = 'pages/about_us.html'
+
+
+class ContactUsPageView(TemplateView):
+    template_name = 'pages/contact_us.html'
+
+
+class NotFoundPageView(TemplateView):
+    template_name = 'pages/404_page.html'
