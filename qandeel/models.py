@@ -26,7 +26,7 @@ class Poet(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
-        return reverse("model_detail", kwargs={"pk": self.pk})
+        return reverse("qandeel:poet_detail", kwargs={"pk": self.pk})
     
     def __str__(self):
         return self.name

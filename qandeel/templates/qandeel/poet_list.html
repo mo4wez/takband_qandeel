@@ -1,0 +1,12 @@
+{% extends "_base.html" %}
+
+{% block page_title %}Poets{% endblock page_title %}
+
+{% block content %}
+    {% for poet in poets %}
+        <h1>{{poet.name}}</h1>
+        <a href="{{poet.get_absolute_url}}">more...</a>
+        ===
+    {% endfor %}
+
+{% endblock content %}
