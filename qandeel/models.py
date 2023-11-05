@@ -91,7 +91,7 @@ class Topic(models.Model):
 
 class Section(models.Model):
     title = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
+    slug = AutoSlugField(populate_from=['title'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
     body = models.TextField()
     book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
     poetic_format = models.ForeignKey(to=PoeticFormat, related_name='sections', on_delete=models.CASCADE)
