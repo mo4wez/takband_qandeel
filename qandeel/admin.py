@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.db.models import Count
 from django.http.request import HttpRequest
 
-from .models import Century, Poet, Book, PoeticFormat, Topic, Section, Comment
+from .models import Century, Poet, Book, PoeticFormat, Topic, Section, Comment, Favorite
 
 
 
@@ -83,4 +83,9 @@ class CommentAdmin(admin.ModelAdmin):
     list_editable = ['status', 'active',]
     ordering = ['-active',]
     autocomplete_fields = ['section',]
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'section',]
+    list_per_page = 10
 
