@@ -1,3 +1,5 @@
+from typing import Any
+from django.db import models
 from django.shortcuts import render
 from django.views import generic
 from django.shortcuts import get_object_or_404
@@ -8,9 +10,9 @@ from .forms import CommentForm
 
 class PoetListView(generic.ListView):
     queryset = Poet.objects.all()
-    paginate_by = 4
     template_name = 'qandeel/poet_list.html'
     context_object_name = 'poets'
+    ordering = 'name'
 
 
 class PoetDetailView(generic.DetailView):
@@ -21,9 +23,9 @@ class PoetDetailView(generic.DetailView):
 
 class BookListView(generic.ListView):
     queryset = Book.objects.all()
-    paginate_by = 6
     template_name = 'qandeel/book_list.html'
     context_object_name = 'books'
+    ordering = 'name'
 
 
 class BookDetailView(generic.DetailView):
@@ -34,9 +36,9 @@ class BookDetailView(generic.DetailView):
 
 class SectionListView(generic.ListView):
     queryset = Section.objects.all()
-    paginate_by = 10
     template_name = 'qandeel/section_list.html'
     context_object_name = 'sections'
+    ordering = 'title'
 
 
 class SectionDetailView(generic.DetailView):

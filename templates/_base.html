@@ -6,6 +6,9 @@
     <title>{% block page_title %}{% endblock page_title %}</title>
 </head>
 <body>
+    <a href="{% url "qandeel:poet_list" %}">Poets</a>
+    <a href="{% url "qandeel:book_list" %}">Books</a>
+    <a href="{% url "qandeel:section_list" %}">Sections</a>
     {% block content %}{% endblock content %}
 </body>
 </html>
