@@ -15,7 +15,6 @@ def custom_slugify(value):
     return slugify(value, separator='-', allow_unicode=True)
 
 
-
 class Century(models.Model):
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -103,7 +102,7 @@ class Section(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = custom_slugify(self.name)
+            self.slug = custom_slugify(self.title)
         super(Section, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
