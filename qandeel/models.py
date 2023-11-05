@@ -133,3 +133,10 @@ class Comment(models.Model):
         return f'comment {self.id}'
 
 
+class Favorite(models.Model):
+    user = models.ForeignKey(to=get_user_model(), related_name='favorites', on_delete=models.CASCADE)
+    section = models.ForeignKey(to=Section, related_name='favorites', on_delete=models.CASCADE)
+
+    class Meta:
+        # Ensure that the same user cannot add the same section to their favorites more than once
+        unique_together = ('user', 'section')
