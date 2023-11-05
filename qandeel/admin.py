@@ -28,9 +28,6 @@ class PoetAdmin(admin.ModelAdmin):
     ordering = ['name',]
     search_fields = ['name',]
     autocomplete_fields = ['century',]
-    prepopulated_fields = {
-        'slug': ('name',),
-    }
 
 
 @admin.register(Book)
@@ -40,9 +37,6 @@ class BookAdmin(admin.ModelAdmin):
     ordering = ['name',]
     search_fields = ['name', 'poet',]
     autocomplete_fields = ['poet',]
-    prepopulated_fields = {
-        'slug': ('name',),
-    }
 
 
 @admin.register(PoeticFormat)
@@ -67,9 +61,7 @@ class SectionAdmin(admin.ModelAdmin):
     search_fields = ['title__istartswith', 'book', 'poetic_format', 'topic',]
     autocomplete_fields = ['poetic_format', 'book', 'topic',]
     inlines = [CommentsInline,]
-    prepopulated_fields = {
-        'slug': ('title',),
-    }
+
 
     def get_queryset(self, request: HttpRequest):
         return super().get_queryset(request) \

@@ -1,8 +1,19 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
+
+from slugify import slugify
+from django_extensions.db.fields import AutoSlugField
+
+
+def custom_slugify(value):
+    """
+    Convert non-English characters to ASCII characters and then create a slug.
+
+    """
+
+    return slugify(value, separator='-', allow_unicode=True)
+
 
 
 class Century(models.Model):
@@ -18,12 +29,17 @@ class Century(models.Model):
 
 class Poet(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, blank=True)
+    slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
     description = models.TextField()
     century = models.ForeignKey(to=Century, on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = custom_slugify(self.name)
+        super(Poet, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("qandeel:poet_detail", kwargs={"slug": self.slug})
@@ -34,12 +50,17 @@ class Poet(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, blank=True)
+    slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
     description = models.TextField()
     poet = models.ForeignKey(to=Poet, on_delete=models.CASCADE)
     
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = custom_slugify(self.name)
+        super(Book, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("qandeel:book_detail", kwargs={"slug": self.slug})
@@ -70,7 +91,7 @@ class Topic(models.Model):
 
 class Section(models.Model):
     title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, blank=True)
+    slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
     body = models.TextField()
     book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
     poetic_format = models.ForeignKey(to=PoeticFormat, related_name='sections', on_delete=models.CASCADE)
@@ -79,6 +100,11 @@ class Section(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = custom_slugify(self.name)
+        super(Section, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("qandeel:section_detail", kwargs={"slug": self.slug})
