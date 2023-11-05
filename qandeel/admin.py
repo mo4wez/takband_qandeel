@@ -78,7 +78,7 @@ class SectionAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'section', 'status', 'active',]
+    list_display = ['id', 'user', 'section', 'status', 'active', 'created_at',]
     list_per_page = 20
     list_editable = ['status', 'active',]
     ordering = ['-active',]
@@ -86,6 +86,7 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'section',]
+    list_display = ['id', 'user', 'section', 'created_at',]
     list_per_page = 10
+    autocomplete_fields = ['user', 'section',]
 

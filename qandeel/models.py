@@ -129,6 +129,9 @@ class Comment(models.Model):
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=COMMENT_WAITING)
     active = models.BooleanField(default=False)
 
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    modified_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
     def __str__(self):
         return f'comment {self.id}'
 
@@ -137,6 +140,12 @@ class Favorite(models.Model):
     user = models.ForeignKey(to=get_user_model(), related_name='favorites', on_delete=models.CASCADE)
     section = models.ForeignKey(to=Section, related_name='favorites', on_delete=models.CASCADE)
 
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    modified_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
     class Meta:
         # Ensure that the same user cannot add the same section to their favorites more than once
         unique_together = ('user', 'section')
+
+    def __str__(self):
+        return f'My favorite is: {self.section.title}'
