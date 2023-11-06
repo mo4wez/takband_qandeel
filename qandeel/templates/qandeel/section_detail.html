@@ -1,0 +1,19 @@
+{% extends "_base.html" %}
+
+{% block page_title %}{{section.title}}{% endblock page_title %}
+
+{% block content %}
+    <h1>{{section.title}}</h1>
+    <h3>{{section.body}}</h3>
+
+    <h2>Comments:</h2>
+    <ul>
+      {% for comment in comments %}
+        <li>
+            {{comment.user}} says: {{comment.text}}
+        </li>
+      {% empty %}
+        <li>comments not found.</li>
+      {% endfor %}
+    </ul>
+{% endblock content %}

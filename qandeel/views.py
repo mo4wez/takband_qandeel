@@ -29,7 +29,6 @@ class PoetDetailView(generic.DetailView):
         return context
     
 
-
 class BookListView(generic.ListView):
     queryset = Book.objects.all()
     template_name = 'qandeel/book_list.html'
@@ -54,6 +53,14 @@ class SectionDetailView(generic.DetailView):
     model = Section
     template_name = 'qandeel/section_detail.html'
     context_object_name = 'section'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        section = self.get_object()
+        comments = section.comments.all()
+        context["comments"] = comments
+        return context
+    
 
 class CommentCreateView(generic.CreateView):
     model = Comment
