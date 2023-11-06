@@ -30,7 +30,7 @@ class Century(models.Model):
 class Poet(models.Model):
     name = models.CharField(max_length=255)
     slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
-    description = RichTextField()
+    description = RichTextField(verbose_name='Description')
     century = models.ForeignKey(to=Century, on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -51,7 +51,7 @@ class Poet(models.Model):
 class Book(models.Model):
     name = models.CharField(max_length=255)
     slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
-    description = models.TextField()
+    description = RichTextField()
     poet = models.ForeignKey(to=Poet, on_delete=models.CASCADE)
     
     created_at = models.DateTimeField(auto_now_add=True)
