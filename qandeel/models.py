@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from ckeditor.fields import RichTextField
 
 from slugify import slugify
 from django_extensions.db.fields import AutoSlugField
@@ -29,7 +30,7 @@ class Century(models.Model):
 class Poet(models.Model):
     name = models.CharField(max_length=255)
     slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
-    description = models.TextField()
+    description = RichTextField()
     century = models.ForeignKey(to=Century, on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
