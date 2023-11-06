@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+
+{% block page_title %}{{book.name}}{% endblock page_title %}
+
+{% block content %}
+    <h1>Book Name: {{book.name}}</h1>
+    <h3>Book Author: {{book.poet}}</h3>
+    <p>
+        {{book.description|safe}}
+    </p>
+{% endblock content %}

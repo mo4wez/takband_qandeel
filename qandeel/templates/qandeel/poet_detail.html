@@ -1,10 +1,18 @@
 {% extends "_base.html" %}
 
-{% block page_title %}Poets{% endblock page_title %}
+{% block page_title %}{{poet.name}}{% endblock page_title %}
 
 {% block content %}
     <h1>Name: {{poet.name}}</h1>
     <p>Description: {{poet.description}}</p>
     <h6>Year: {{poet.century}}</h6>
-
+    
+    <h2>Books:</h2>
+    <ul>
+      {% for book in books %}
+        <li><a href="{{ book.get_absolute_url }}">{{ book.name }}</a></li>
+      {% empty %}
+        <li>books not found.</li>
+      {% endfor %}
+    </ul>
 {% endblock content %}

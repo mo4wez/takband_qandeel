@@ -19,6 +19,15 @@ class PoetDetailView(generic.DetailView):
     model = Poet
     template_name = 'qandeel/poet_detail.html'
     context_object_name = 'poet'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        poet = self.get_object()
+        books = poet.books.all()
+        context["books"] = books
+
+        return context
+    
 
 
 class BookListView(generic.ListView):
