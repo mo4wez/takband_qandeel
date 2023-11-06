@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from ckeditor.fields import RichTextField
@@ -26,7 +27,7 @@ class Poet(models.Model):
     name = models.CharField(max_length=255)
     slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
     description = RichTextField(verbose_name='Description')
-    century = models.ForeignKey(to=Century, on_delete=models.PROTECT)
+    century = models.ForeignKey(to=Century, related_name='poets',on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -108,6 +109,11 @@ class Section(models.Model):
         return self.title
     
 
+class ActiveCommentsManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True)
+
+
 class Comment(models.Model):
     COMMENT_WAITING = 'wa'
     COMMENT_APPROVED = 'ap'
@@ -127,6 +133,10 @@ class Comment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     modified_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+    # Manager
+    objects = models.Manager()
+    active_comments_manager = ActiveCommentsManager()
 
     def __str__(self):
         return f'comment {self.id}'
