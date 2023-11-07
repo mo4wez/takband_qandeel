@@ -49,6 +49,7 @@ class Book(models.Model):
     slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
     description = RichTextField()
     poet = models.ForeignKey(to=Poet, related_name='books', on_delete=models.CASCADE)
+    cover = models.ImageField(upload_to='book/book_cover/', blank=True, verbose_name='Book Cover')
     
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
