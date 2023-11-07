@@ -8,4 +8,16 @@
     <p>
         {{book.description|safe}}
     </p>
+
+    <h1>Sections:</h1>
+
+    <ul>
+        {% for section in sections %}
+            <li>
+                <a href="{{ section.get_absolute_url }}">{{section.title}}</a>
+            </li>
+            {% empty %}
+            <p>No sections.</p>
+        {% endfor %}
+    </ul>
 {% endblock content %}

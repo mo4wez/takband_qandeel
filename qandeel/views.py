@@ -42,6 +42,14 @@ class BookDetailView(generic.DetailView):
     template_name = 'qandeel/book_detail.html'
     context_object_name = 'book'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book = self.get_object()
+        sections = book.sections.all()
+        context["sections"] = sections
+
+        return context
+    
 
 class SectionListView(generic.ListView):
     queryset = Section.objects.all()
