@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from ckeditor.fields import RichTextField

@@ -6,6 +6,12 @@
     <h1>{{section.title}}</h1>
     <h3>{{section.body}}</h3>
 
+    <form method="post" action="{% url 'qandeel:comment_create' slug=object.slug %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Comment</button>
+    </form>
+
     <h2>Comments:</h2>
     <ul>
       {% for comment in comments %}

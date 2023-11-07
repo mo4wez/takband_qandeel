@@ -1,8 +1,7 @@
-from typing import Any
-from django.db import models
-from django.shortcuts import render
+from django.urls import reverse
 from django.views import generic
 from django.shortcuts import get_object_or_404
+from django.views.generic.edit import FormMixin
 
 from .models import Poet, Book, Section, Comment
 from .forms import CommentForm
@@ -49,17 +48,40 @@ class SectionListView(generic.ListView):
     ordering = 'title'
 
 
-class SectionDetailView(generic.DetailView):
+class SectionDetailView(FormMixin, generic.DetailView):
     model = Section
     template_name = 'qandeel/section_detail.html'
     context_object_name = 'section'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse('qandeel:section_detail', kwargs={'slug': self.object.slug})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         section = self.get_object()
+        form = self.get_form()
         comments = section.comments.all()
+        context["form"] = form
         context["comments"] = comments
+        
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.user = self.request.user
+        obj.section = self.object
+        obj.save()
+
+        return super().form_valid(form)
     
 
 class CommentCreateView(generic.CreateView):
@@ -69,10 +91,12 @@ class CommentCreateView(generic.CreateView):
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.user = self.request.user
-
-        section_id = int(self.kwargs('section_id'))
-        section = get_object_or_404(Poet, id=section_id)
-        obj.poet = section
+        section_slug = self.kwargs['slug']
+        section = get_object_or_404(Section, slug=section_slug)
+        obj.section = section
 
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('qandeel:section_detail', kwargs={'slug': self.kwargs['slug']})
     
