@@ -55,9 +55,10 @@ class TopicAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'book', 'get_poet', 'poetic_format', 'topic', 'num_of_comments', 'modified_at',]
+    list_display = ['id', 'title', 'book', 'get_poet', 'poetic_format', 'topic', 'active', 'num_of_comments', 'modified_at',]
     list_per_page = 20
     ordering = ['title',]
+    list_editable = ['active',]
     search_fields = ['title__istartswith', 'book', 'poetic_format', 'topic',]
     autocomplete_fields = ['poetic_format', 'book', 'topic',]
     inlines = [CommentsInline,]
