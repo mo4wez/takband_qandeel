@@ -61,7 +61,8 @@ class SectionDetailView(FormMixin, generic.DetailView):
         context = super().get_context_data(**kwargs)
         section = self.get_object()
         form = self.get_form()
-        comments = section.comments.all()
+        comments = Comment.active_comments_manager.filter(section=section)
+        
         context["form"] = form
         context["comments"] = comments
         

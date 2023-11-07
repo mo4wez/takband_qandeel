@@ -110,7 +110,7 @@ class Section(models.Model):
 
 class ActiveCommentsManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(active=True)
+        return super().get_queryset().filter(active=True, status=Comment.COMMENT_APPROVED)
 
 
 class Comment(models.Model):
