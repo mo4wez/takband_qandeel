@@ -52,7 +52,7 @@ class BookDetailView(generic.DetailView):
     
 
 class SectionListView(generic.ListView):
-    queryset = Section.objects.all()
+    queryset = Section.objects.filter(active=True)
     template_name = 'qandeel/section_list.html'
     context_object_name = 'sections'
     ordering = 'title'
@@ -64,8 +64,6 @@ class SectionDetailView(FormMixin, generic.DetailView):
     context_object_name = 'section'
     form_class = CommentForm
 
-    def get_success_url(self):
-        return reverse('qandeel:section_detail', kwargs={'slug': self.object.slug})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -99,6 +97,9 @@ class SectionDetailView(FormMixin, generic.DetailView):
 
         return super().form_valid(form)
     
+    def get_success_url(self):
+        return reverse('qandeel:section_detail', kwargs={'slug': self.object.slug})
+
 
 class CommentCreateView(generic.CreateView):
     model = Comment
@@ -125,6 +126,7 @@ class AddToFavoritesView(generic.CreateView):
         section_slug = form.cleaned_data['section_slug']
         section = get_object_or_404(Section, slug=section_slug)
         Favorite.objects.get_or_create(user=self.request.user, section=section)
+        
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -133,6 +135,7 @@ class AddToFavoritesView(generic.CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['section_slug'] = self.kwargs['section_slug']
+
         return kwargs
     
     def post(self, request, *args, **kwargs):
