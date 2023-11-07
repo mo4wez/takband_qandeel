@@ -27,6 +27,7 @@ class Poet(models.Model):
     slug = AutoSlugField(populate_from=['name'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
     description = RichTextField(verbose_name='Description')
     century = models.ForeignKey(to=Century, related_name='poets',on_delete=models.PROTECT)
+    image = models.ImageField(upload_to='poet/poet_image/', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
