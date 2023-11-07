@@ -88,7 +88,7 @@ class Section(models.Model):
     title = models.CharField(max_length=255)
     slug = AutoSlugField(populate_from=['title'], unique=True, allow_unicode=True, slugify_function=custom_slugify)
     body = RichTextField()
-    book = models.ForeignKey(to=Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(to=Book, related_name='sections', on_delete=models.CASCADE)
     poetic_format = models.ForeignKey(to=PoeticFormat, related_name='sections', on_delete=models.CASCADE)
     topic = models.ForeignKey(to=Topic, related_name='sections', null=True, blank=True, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
