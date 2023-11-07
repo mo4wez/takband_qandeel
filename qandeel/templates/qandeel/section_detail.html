@@ -6,6 +6,19 @@
     <h1>{{section.title}}</h1>
     <h3>{{section.body}}</h3>
 
+    {% if user.is_authenticated %}
+      {% if is_in_favorites %}
+        <p>This section is already in your favorites.</p>
+      {% else %}
+          <form method="post" action="{% url 'qandeel:add_to_favorites' section.slug %}">
+              {% csrf_token %}
+              <button type="submit">Add to Favorites</button>
+          </form>
+      {% endif %}
+    {% else %}
+      <p><a href="{% url 'account_login' %}">Log in</a> to add this section to your favorites.</p>
+    {% endif %}
+
     <form method="post" action="{% url 'qandeel:comment_create' slug=object.slug %}">
         {% csrf_token %}
         {{ form.as_p }}

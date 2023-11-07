@@ -1,9 +1,11 @@
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.shortcuts import redirect
 from django.views import generic
 from django.shortcuts import get_object_or_404
+from django.views.generic.edit import FormView
 from django.views.generic.edit import FormMixin
 
-from .models import Poet, Book, Section, Comment
+from .models import Poet, Book, Section, Comment, Favorite
 from .forms import CommentForm
 
 
@@ -62,9 +64,14 @@ class SectionDetailView(FormMixin, generic.DetailView):
         section = self.get_object()
         form = self.get_form()
         comments = Comment.active_comments_manager.filter(section=section)
+
+        is_in_favorites = False
+        if self.request.user.is_authenticated:
+            is_in_favorites = Favorite.objects.filter(user=self.request.user, section=section).exists()
         
         context["form"] = form
         context["comments"] = comments
+        context["is_in_favorites"] = is_in_favorites
         
         return context
 
@@ -101,3 +108,31 @@ class CommentCreateView(generic.CreateView):
     def get_success_url(self):
         return reverse('qandeel:section_detail', kwargs={'slug': self.kwargs['slug']})
     
+
+class AddToFavoritesView(generic.CreateView):
+    model = Favorite
+    template_name = 'qandeel/section_detail.html'
+
+    def form_valid(self, form):
+        section_slug = form.cleaned_data['section_slug']
+        section = get_object_or_404(Section, slug=section_slug)
+        Favorite.objects.get_or_create(user=self.request.user, section=section)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('qandeel:section_detail', kwargs={'slug': self.kwargs['section_slug']})
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['section_slug'] = self.kwargs['section_slug']
+        return kwargs
+    
+    def post(self, request, *args, **kwargs):
+        section_slug = kwargs['section_slug']
+        section = get_object_or_404(Section, slug=section_slug)
+
+        if not Favorite.objects.filter(user=request.user, section=section).exists():
+            favorite = Favorite(user=request.user, section=section)
+            favorite.save()
+            
+        return redirect('qandeel:section_detail', slug=section_slug)

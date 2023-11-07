@@ -8,6 +8,7 @@ from .views import (
     SectionListView,
     SectionDetailView,
     CommentCreateView,
+    AddToFavoritesView,
     )
 
 app_name = 'qandeel'
@@ -19,5 +20,6 @@ urlpatterns = [
     re_path('books/(?P<slug>[-\w]+)/', BookDetailView.as_view(), name='book_detail'),
     path('sections/', SectionListView.as_view(), name='section_list'),
     re_path('sections/(?P<slug>[-\w]+)/', SectionDetailView.as_view(), name='section_detail'),
-    path(r'^comment/(?P<slug>[-\w]+)/', CommentCreateView.as_view(), name='comment_create'),
+    re_path('comment/(?P<slug>[-\w]+)/', CommentCreateView.as_view(), name='comment_create'),
+    path('favorite/<section_slug>/', AddToFavoritesView.as_view(), name='add_to_favorites'),
 ]
