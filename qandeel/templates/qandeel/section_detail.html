@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>{{section.title}}</h1>
-    <h3>{{section.body}}</h3>
+    <h3>{{section.body|safe}}</h3>
 
     {% if user.is_authenticated %}
       {% if is_in_favorites %}

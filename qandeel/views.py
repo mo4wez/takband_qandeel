@@ -1,3 +1,5 @@
+from typing import Any
+from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import redirect
 from django.views import generic
@@ -20,18 +22,20 @@ class PoetDetailView(generic.DetailView):
     model = Poet
     template_name = 'qandeel/poet_detail.html'
     context_object_name = 'poet'
+
+    def get_queryset(self):
+        return Poet.objects.all().prefetch_related('books')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        poet = self.get_object()
-        books = poet.books.all()
+        books = self.object.books.all()
         context["books"] = books
 
         return context
     
 
 class BookListView(generic.ListView):
-    queryset = Book.objects.all()
+    queryset = Book.objects.all().select_related('poet')
     template_name = 'qandeel/book_list.html'
     context_object_name = 'books'
     ordering = 'name'
@@ -42,17 +46,19 @@ class BookDetailView(generic.DetailView):
     template_name = 'qandeel/book_detail.html'
     context_object_name = 'book'
 
+    def get_queryset(self):
+        return Book.objects.all().prefetch_related('sections')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        book = self.get_object()
-        sections = book.sections.all()
+        sections = self.object.sections.all()
         context["sections"] = sections
 
         return context
     
 
 class SectionListView(generic.ListView):
-    queryset = Section.objects.filter(active=True)
+    queryset = Section.objects.filter(active=True).select_related('poetic_format')
     template_name = 'qandeel/section_list.html'
     context_object_name = 'sections'
     ordering = 'title'
@@ -64,6 +70,10 @@ class SectionDetailView(FormMixin, generic.DetailView):
     context_object_name = 'section'
     form_class = CommentForm
 
+    def get_queryset(self):
+        return Section.objects \
+            .select_related('book', 'poetic_format', 'topic') \
+            .prefetch_related('comments')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -81,14 +91,6 @@ class SectionDetailView(FormMixin, generic.DetailView):
         
         return context
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.user = self.request.user
@@ -96,7 +98,7 @@ class SectionDetailView(FormMixin, generic.DetailView):
         obj.save()
 
         return super().form_valid(form)
-    
+
     def get_success_url(self):
         return reverse('qandeel:section_detail', kwargs={'slug': self.object.slug})
 

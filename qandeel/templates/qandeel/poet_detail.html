@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>Name: {{poet.name}}</h1>
-    <p>Description: {{poet.description}}</p>
+    <p>Description: {{poet.description|safe}}</p>
     <h6>Year: {{poet.century}}</h6>
     
     <h2>Books:</h2>
