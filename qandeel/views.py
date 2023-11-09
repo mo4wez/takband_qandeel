@@ -1,12 +1,11 @@
-from typing import Any
-from django.db import models
 from django.urls import reverse, reverse_lazy
-from django.shortcuts import redirect
-from django.views import generic
 from django.shortcuts import get_object_or_404
-from django.views.generic.edit import FormView
+from django.db.models import Prefetch
+from django.views import generic
+from django.shortcuts import redirect
 from django.views.generic.edit import FormMixin
 
+from accounts.models import CustomUser
 from .models import Poet, Book, Section, Comment, Favorite
 from .forms import CommentForm
 
@@ -69,24 +68,18 @@ class SectionDetailView(FormMixin, generic.DetailView):
     template_name = 'qandeel/section_detail.html'
     context_object_name = 'section'
     form_class = CommentForm
-
-    def get_queryset(self):
-        return Section.objects \
-            .select_related('book', 'poetic_format', 'topic') \
-            .prefetch_related('comments')
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         section = self.get_object()
         form = self.get_form()
-        comments = Comment.active_comments_manager.filter(section=section)
 
         is_in_favorites = False
         if self.request.user.is_authenticated:
             is_in_favorites = Favorite.objects.filter(user=self.request.user, section=section).exists()
         
         context["form"] = form
-        context["comments"] = comments
+        context["comments"] = Comment.active_comments_manager.select_related('user').filter(section=section)
         context["is_in_favorites"] = is_in_favorites
         
         return context
@@ -124,28 +117,20 @@ class AddToFavoritesView(generic.CreateView):
     model = Favorite
     template_name = 'qandeel/section_detail.html'
 
-    def form_valid(self, form):
-        section_slug = form.cleaned_data['section_slug']
-        section = get_object_or_404(Section, slug=section_slug)
-        Favorite.objects.get_or_create(user=self.request.user, section=section)
-        
-        return super().form_valid(form)
+    def get_section(self):
+        if not hasattr(self, '_section'):
+            section_slug = self.kwargs['section_slug']
+            self._section = get_object_or_404(Section, slug=section_slug)
+        return self._section
 
-    def get_success_url(self):
-        return reverse_lazy('qandeel:section_detail', kwargs={'slug': self.kwargs['section_slug']})
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['section_slug'] = self.kwargs['section_slug']
-
-        return kwargs
-    
     def post(self, request, *args, **kwargs):
-        section_slug = kwargs['section_slug']
-        section = get_object_or_404(Section, slug=section_slug)
-
+        section = get_object_or_404(Section, slug=self.kwargs['section_slug'])
         if not Favorite.objects.filter(user=request.user, section=section).exists():
             favorite = Favorite(user=request.user, section=section)
             favorite.save()
-            
-        return redirect('qandeel:section_detail', slug=section_slug)
+        return redirect('qandeel:section_detail', slug=section.slug)
+
+    def get_success_url(self):
+        section = get_object_or_404(Section, slug=self.kwargs['section_slug'])
+        return reverse_lazy('qandeel:section_detail', kwargs={'slug': section.slug})
+    
