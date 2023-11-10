@@ -128,7 +128,7 @@ class Comment(models.Model):
 
     section = models.ForeignKey(to=Section, related_name='comments', on_delete=models.CASCADE)
     user = models.ForeignKey(to=get_user_model(), related_name='comments', on_delete=models.CASCADE)
-    text = models.CharField(max_length=255, verbose_name='Leave a comment')
+    text = models.CharField(max_length=255)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=COMMENT_WAITING)
     active = models.BooleanField(default=False)
 
