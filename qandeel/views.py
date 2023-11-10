@@ -1,13 +1,9 @@
-from typing import Any
-from django.db import models
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.db.models import Prefetch
 from django.views import generic
 from django.shortcuts import redirect
 from django.views.generic.edit import FormMixin
 
-from accounts.models import CustomUser
 from .models import Poet, Book, Section, Comment, Favorite
 from .forms import CommentForm
 
