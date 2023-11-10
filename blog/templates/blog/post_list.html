@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+
+{% block page_title %}بلاگ{% endblock page_title %}
+
+{% block content %}
+<ul>
+    {% for post in posts %}
+        <li>
+            <strong>Title:</strong> {{ post.title }}<br>
+            <strong>Author:</strong> {{ post.author.username }}<br>
+            <strong>Created At:</strong> {{ post.created_at }}<br>
+            <strong>Content:</strong> {{ post.content|safe }}<br><br>
+        </li>
+        <a href="{{ post.get_absolute_url }}">گیشتر</a>
+    {% empty %}
+        <li>No blog posts available.</li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
