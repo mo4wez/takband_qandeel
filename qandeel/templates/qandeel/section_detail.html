@@ -9,6 +9,10 @@
     {% if user.is_authenticated %}
       {% if is_in_favorites %}
         <p>This section is already in your favorites.</p>
+        <form method="post" action="{% url 'qandeel:add_to_favorites' section.slug %}">
+            {% csrf_token %}
+            <button type="submit">Remove from Favorites</button>
+        </form>
       {% else %}
           <form method="post" action="{% url 'qandeel:add_to_favorites' section.slug %}">
               {% csrf_token %}

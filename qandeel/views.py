@@ -1,3 +1,5 @@
+from typing import Any
+from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
@@ -117,20 +119,16 @@ class AddToFavoritesView(generic.CreateView):
     model = Favorite
     template_name = 'qandeel/section_detail.html'
 
-    def get_section(self):
-        if not hasattr(self, '_section'):
-            section_slug = self.kwargs['section_slug']
-            self._section = get_object_or_404(Section, slug=section_slug)
-        return self._section
-
     def post(self, request, *args, **kwargs):
-        section = get_object_or_404(Section, slug=self.kwargs['section_slug'])
-        if not Favorite.objects.filter(user=request.user, section=section).exists():
-            favorite = Favorite(user=request.user, section=section)
-            favorite.save()
-        return redirect('qandeel:section_detail', slug=section.slug)
+        section_slug = self.kwargs['section_slug']
+        section = get_object_or_404(Section, slug=section_slug)
+        user = request.user
 
-    def get_success_url(self):
-        section = get_object_or_404(Section, slug=self.kwargs['section_slug'])
-        return reverse_lazy('qandeel:section_detail', kwargs={'slug': section.slug})
-    
+        is_in_favorites = Favorite.objects.filter(user=user, section=section).exists()
+
+        if is_in_favorites:
+            Favorite.objects.filter(user=user, section=section).delete()
+        else:
+            Favorite.objects.create(user=user, section=section)
+
+        return redirect('qandeel:section_detail', slug=section_slug)
