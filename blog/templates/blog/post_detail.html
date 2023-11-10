@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+
+{% block page_title %}{{post.title}}{% endblock page_title %}
+
+{% block content %}
+    <h1>
+        Title: {{ post.title }}
+    </h1>
+    <h3>
+        Author: {{ post.author }}
+    </h3>
+    <p>
+        Content: {{ post.content|safe }}
+    </p>
+{% endblock content %}
